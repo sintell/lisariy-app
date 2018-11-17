@@ -1,0 +1,21 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "sintell",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "eslint": "^5.5.0",
+    "webpack": "^4.17.2"
+  },
+  "dependencies": {
+    "@koa/cors": "^2.2.2",
+    "koa": "^2.5.3",
+    "koa-body": "^4.0.4",
+    "koa-graceful-shutdown": "^1.1.0",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0"
+  }
+}
