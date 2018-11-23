@@ -25,9 +25,19 @@ services:
     restart: always
     build: app/static
     ports:
-    - "80:80"
+      - "80:80"
+      - "443:443"
     volumes:
       - ./app/lisariy-server/images:/var/lib/lisariy-webapp/images
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
 volumes:
      pgdata:
