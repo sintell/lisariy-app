@@ -5,6 +5,7 @@ ENV NODE_ENV=development
 COPY package.json /app
 COPY babel.config.js /app
 COPY src/ /app/src
+COPY public/ /app/public
 RUN yarn install
 RUN yarn build
 
