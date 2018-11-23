@@ -8,7 +8,7 @@ services:
       - "9182:9182"
     volumes:
       - ./app/lisariy-server/config/prod-config.json:/etc/lisariy-webapp/config/config.json
-      - ./app/lisariy-server/images:/var/lib/lisariy-webapp/images
+      - images:/var/lib/lisariy-webapp/images
 
   db:
     restart: always
@@ -28,7 +28,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./app/lisariy-server/images:/var/lib/lisariy-webapp/images
+      - images:/var/lib/lisariy-webapp/images
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
       - ./logs/nginx:/var/log/nginx/
@@ -42,4 +42,5 @@ services:
       - ./data/certbot/www:/var/www/certbot
 
 volumes:
-     pgdata:
+  pgdata:
+  images:
