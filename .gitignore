@@ -2,3 +2,4 @@
 yarn-error.log
 .code
 docker-compose.override.yml
+app/lisariy-server
