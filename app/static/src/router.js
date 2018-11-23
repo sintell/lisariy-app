@@ -30,6 +30,11 @@ export default new Router({
       name: 'publish',
       component: () => import(/* webpackChunkName: "publish" */ './views/Publish.vue')
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import(/* webpackChunkName: "publish" */ './views/Login.vue')
+    },
 
   ]
 })

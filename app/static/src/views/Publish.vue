@@ -1,96 +1,89 @@
 <template>
-    <div>
-        <div>
-            <label>Files
-                <input type="file" id="files" ref="files" multiple v-on:change="handleFilesUpload()"/>
-            </label>
-        </div>
-        <div>
-            <div v-for="(file, key) in files" :key="file.name" class="file-listing">{{ file.name }} <span class="remove-file" v-on:click="removeFile( key )">Remove</span></div>
-        </div>
-        <br>
-        <div>
-            <button v-on:click="addFiles()">Add Files</button>
-        </div>
-        <br>
-        <div>
-            <button v-on:click="submitFiles()">Submit</button>
-        </div>
+    <div >
+      <vk-tabs>
+        <vk-tabs-item title="Загрузить">
+           <vk-grid
+            matched
+            gutter="medium"
+          >
+            <div
+              v-for="(file, idx) in files"
+              :key="file.name + idx"
+            >
+              <vk-card class="uk-width-medium">
+                <div slot="badge"><vk-icon-button icon="trash" @click="removeFile(idx)"/></div>
+                <div slot="media-top">
+                  <img :src="getImgSrc(file)" :alt="file.name"/>
+                  <div
+                    v-if="isSubmiting"
+                    class="uk-overlay-default uk-position-cover"
+                  >
+                    <vk-spinner class="uk-position-center" ratio="2"/>
+                  </div>
+                </div>
+                <vk-card-title>{{file.name}}</vk-card-title>
+              </vk-card>
+            </div>
+            <div>
+              <vk-card class="uk-width-medium">
+                <div>
+                  <div class="uk-placeholder uk-text-center">
+                      <vk-icon icon="cloud-upload"/>&nbsp;
+                      <span class="uk-text-middle">Перетащи изображение сюда или</span>
+                      <div class="uk-form-custom">
+                        <input id="files" ref="files" type="file" multiple @change="handleFilesUpload()">
+                        <span class="uk-link">&nbsp;воспользуйся формой</span>
+                      </div>
+                  </div>
+                </div>
+              </vk-card>
+            </div>
+          </vk-grid>
+
+          <hr class="uk-divider-icon">
+          <vk-button v-on:click="submitPictures()" :disabled="isSubmiting">Отправить</vk-button>
+        </vk-tabs-item>
+        <vk-tabs-item :title="'Редактировать' + (count ? ` (${count})` : '')" :disabled="count === 0">
+          <div class="uk-placeholder" v-if="count === 0">
+            Загрузите еще изображений на вкладке "Загрузить"
+          </div>
+          <pictures-list :pictures="pictures" editable/>
+        </vk-tabs-item>
+      </vk-tabs>
     </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import PicturesList from "@/components/PicturesList"
+
 export default {
-     /*
-      Defines the data used by the component
-    */
-    data(){
-      return {
-        files: []
-      }
+  components: {
+    PicturesList,
+  },
+  computed: mapState({
+    isSubmiting: state => state.submitedPictures.loading,
+    files: state => state.submitedPictures.all,
+    pictures: state => state.submitedPictures.editable,
+    count: state => state.submitedPictures.editable.length,
+  }),
+  methods: {
+    addFiles(){
+      this.$refs.files.click();
     },
-    /*
-      Defines the method used by the component
-    */
-    methods: {
-      /*
-        Adds a file
-      */
-      addFiles(){
-        this.$refs.files.click();
-      },
-      /*
-        Submits files to the server
-      */
-      submitFiles(){
-        /*
-          Initialize the form data
-        */
-        let formData = new FormData();
-        /*
-          Iteate over any file sent over appending the files
-          to the form data.
-        */
-        for( var i = 0; i < this.files.length; i++ ){
-          let file = this.files[i];
-          formData.append('files[' + i + ']', file);
-        }
-        /*
-          Make the request to the POST /select-files URL
-        */
-        axios.post( '/select-files',
-          formData,
-          {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-          }
-        ).then(function(){
-          console.log('SUCCESS!!');
-        })
-        .catch(function(){
-          console.log('FAILURE!!');
-        });
-      },
-      /*
-        Handles the uploading of files
-      */
-      handleFilesUpload(){
-        let uploadedFiles = this.$refs.files.files;
-        /*
-          Adds the uploaded file to the files array
-        */
-        for( var i = 0; i < uploadedFiles.length; i++ ){
-          this.files.push( uploadedFiles[i] );
-        }
-      },
-      /*
-        Removes a select file the user has uploaded
-      */
-      removeFile( key ){
-        this.files.splice( key, 1 );
-      }
+    submitPictures(){
+        this.$store.dispatch('submitPictures');
+    },
+    handleFilesUpload() {
+      this.$store.dispatch('addPicturesToSubmit', this.$refs.files.files)
+    },
+    removeFile( key ){
+      this.$store.dispatch('removePictureFromSubmit', key)
+    },
+    getImgSrc(file) {
+      return window.URL.createObjectURL(file);
     }
+  }
 }
 </script>
 

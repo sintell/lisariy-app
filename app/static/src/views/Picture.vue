@@ -1,24 +1,38 @@
 <template>
-    <div v-if="!loading">
-        <h1>{{picture.description}}</h1>
-        <Picture :alt="picture.description" :src="picture.src"/>
-        <div>
-            <vue-disqus
-                shortname="lisariy"
-                :identifier="pic_id"
-                url="lisariy-ru.disqus.com"/>
+    <vk-card v-if="!loading">
+        <div slot="header">
+            <vk-grid gutter="small" class="uk-flex-middle">
+                <div class="uk-width-expand">
+                    <vk-card-title class="uk-margin-remove-bottom">{{picture.title || "Без названия"}}</vk-card-title>
+                    <p class="uk-text-meta uk-margin-remove-top">
+                        <time :datetime="picture.createdAt">{{formatDate(picture.createdAt)}}</time>
+                    </p>
+                </div>
+            </vk-grid>
         </div>
-    </div>
+        <div>
+            <PictureItem :alt="picture.title" :src="picture.processedSrc"/>
+            <p>{{picture.description}}</p>
+        </div>
+        <div slot="footer" class="uk-grid uk-flex-center">
+            <div class="uk-width-2-3">
+                <vue-disqus
+                    shortname="lisariy-ru"
+                    :identifier="pic_id"
+                    :url="'http://lisariy.ru' + this.$route.path"/>
+            </div>
+        </div>
+    </vk-card>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import Picture from "@/components/Picture";
+import PictureItem from "@/components/PictureItem";
 
 export default {
-    name: 'picture',
+    name: 'pictureItem',
     components: {
-        Picture
+        PictureItem
     },
     computed: mapState({
         picture: state => state.pictures.current,
@@ -27,10 +41,12 @@ export default {
     }),
     created() {
         this.$store.dispatch('getOnePicture', this.$route.params.id);
+    },
+    methods: {
+        formatDate(ts) {
+            let date = new Date(ts);
+            return `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+        }
     }
 }
 </script>
-
-<style>
-
-</style>

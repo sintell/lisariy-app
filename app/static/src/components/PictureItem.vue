@@ -1,5 +1,5 @@
 <template>
-    <img class="picture" :src="src" :alt="alt"/>
+    <img :src="src" :alt="alt"/>
 </template>
 
 <script>
@@ -13,8 +13,7 @@ export default {
 
 <style>
     .picture {
-        width: 400px;
-        height: 400px;
-        display: block;
+        width: 100%;
+        height: auto;
     }
 </style>
