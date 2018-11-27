@@ -11,5 +11,5 @@ RUN yarn build
 
 FROM nginx:1.15.5-alpine
 
-COPY conf.d/* /etc/nginx/conf.d/
+COPY conf.d/lisariy.conf /etc/nginx/conf.d/lisariy.conf
 COPY --from=builder /app/dist /var/www/lisariy.ru/html/

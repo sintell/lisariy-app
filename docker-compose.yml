@@ -4,6 +4,7 @@ services:
     build:
       context: ./app/lisariy-server
       dockerfile: deploy/Dockerfile
+    restart: always
     ports:
       - "9182:9182"
     volumes:
@@ -32,7 +33,6 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
       - ./logs/nginx:/var/log/nginx/
-      - ./conf.d:/etc/nginx/conf.d//etc/nginx/conf.d/
 
   certbot:
     image: certbot/certbot
