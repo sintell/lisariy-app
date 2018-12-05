@@ -16,11 +16,16 @@ export const BEGIN_PICTURE_UPDATE = 'beginPictureUpdate';
 export const PICTURE_UPDATE = 'pictureUpdate';
 export const ROLLBACK_PICTURE_UPDATE = 'rollbackPictureUpdate';
 
+export const UPDATE_PICTURE_TAGS = "updatePictureTags";
+export const DELETE_PICTURE_TAG = "deletePictureTag";
+export const EDIT_PICTURE_TAG = "editPictureTag";
+
 export const SHOW_PICTURE = 'showPicture';
 export const HIDE_PICTURE = 'hidePicture';
 
 //Auth
 export const LOG_IN = 'logIn';
+export const LOG_OUT = 'logOut';
 
 //Meta
 

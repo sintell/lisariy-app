@@ -17,9 +17,11 @@ import {
   BEGIN_PICTURE_UPDATE,
   PICTURE_UPDATE,
   ROLLBACK_PICTURE_UPDATE,
+  UPDATE_PICTURE_TAGS,
   ADD_NOTIFICATION,
   UPDATE_NOTIFICATIONS,
-  LOG_IN
+  LOG_IN,
+  LOG_OUT,
 } from "./types";
 
 Vue.use(Vuex)
@@ -43,9 +45,11 @@ export default new Vuex.Store({
   getters:{
     picturesNewToOld: state => {
       return state.pictures.all.sort((a, b) => {
-        console.log(new Date(b.createdAt) - new Date(a.createdAt))
         return new Date(b.createdAt) - new Date(a.createdAt);
       });
+    },
+    isLoggedIn: state => {
+      return state.user.key !== undefined;
     }
   },
   mutations: {
@@ -82,6 +86,9 @@ export default new Vuex.Store({
     [LOG_IN]: (state, user) => {
       state.user = user;
     },
+    [LOG_OUT]: (state) => {
+      state.user = {};
+    },
     [ADD_NOTIFICATION]: (state, notification) => {
       state.notifications.push(notification);
     },
@@ -110,8 +117,12 @@ export default new Vuex.Store({
       state.pictures.all = [picture, ...state.pictures.all];
       state.submitedPictures.editable = state.submitedPictures.editable.filter(p => p.id !== picture.id);
     },
-    [ROLLBACK_PICTURE_UPDATE]:(state, id)=> {
+    [ROLLBACK_PICTURE_UPDATE]:(state, id) => {
       state.pictures.all = state.submitedPictures.editable.map((p) => p.id === id ? {...p, toUpdate: false}: p);
+    },
+    [UPDATE_PICTURE_TAGS]:(state, {pictureId, tags}) => {
+      state.submitedPictures.editable = state.submitedPictures.editable
+        .map((p) => p.id === pictureId ? {...p, tags: tags}: p);
     },
   },
   actions: {
@@ -182,10 +193,19 @@ export default new Vuex.Store({
         commit(ROLLBACK_PICTURE_UPDATE, picture.id);
       });
     },
-    login({ commit }) {
-      authAPI.login().then(({data: {response}}) => {
+    [UPDATE_PICTURE_TAGS]: ({ commit }, {pictureId, tags}) => {
+      commit(UPDATE_PICTURE_TAGS, {pictureId, tags});
+    },
+    login({ commit }, authData) {
+      return authAPI.login(authData).then(({data: {response}}) => {
         commit(LOG_IN, response);
       })
+    },
+    logout({ commit }) {
+      return authAPI.logout().then(({data: {response}}) => {
+        commit(LOG_OUT, response);
+      })
+
     },
     getMeInfo({ commit }) {
       authAPI.getMe().then(({data: {response}}) => {

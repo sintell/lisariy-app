@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import PictureCard from '@/components/PictureCard';
+import PictureCard from '@/components/PictureCard.vue';
 
 export default {
     name:'pictures-list',

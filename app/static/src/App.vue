@@ -3,7 +3,7 @@
     <vk-notification
       :messages="notifications"
       :timeout="2000"
-      v-on:update:messages="updateNotifications"
+      @update:messages="updateNotifications"
       position="top-right"
     />
     <vk-navbar>
@@ -15,10 +15,11 @@
           title="Работы"
           @click.prevent="pushRoute('/')"/>
         <vk-navbar-nav-item
-          :active="this.$route.path === '/about'"
-          href="/about"
-          title="Обо мне"
-          @click.prevent="pushRoute('/about')"/>
+          v-if="authorized"
+          :active="this.$route.path === '/publish'"
+          href="/publish"
+          :title="'Опубликовать' + (countUnsaved ? ` (${countUnsaved})` : '')"
+          @click.prevent="pushRoute('/publish')"/>
         <vk-navbar-nav-item
           v-if="!authorized"
           :active="this.$route.path === '/login'"
@@ -27,10 +28,14 @@
           @click.prevent="pushRoute('/login')"/>
         <vk-navbar-nav-item
           v-if="authorized"
-          :active="this.$route.path === '/publish'"
-          href="/publish"
-          :title="'Опубликовать' + (countUnsaved ? ` (${countUnsaved})` : '')"
-          @click.prevent="pushRoute('/publish')"/>
+          :active="this.$route.path === '/profile'"
+          href="/profile"
+          title="Мой профиль"
+          @click.prevent="pushRoute('/profile')"/>
+        <vk-navbar-nav-item
+          v-if="authorized"
+          title="Выйти"
+          @click.prevent="logout"/>
       </vk-navbar-nav>
     </vk-navbar>
       <div class="uk-container">
@@ -40,15 +45,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
-  computed: mapState({
+  computed: {
+    ...mapState({
       loading: state => state.loading,
       authorized: state => state.user.key !== undefined,
       notifications: state => state.notifications,
       countUnsaved: state => state.submitedPictures.editable.length,
-  }),
+    })
+  },
   created() {
     this.$store.dispatch('getMeInfo');
   },
@@ -58,6 +65,12 @@ export default {
     },
     updateNotifications(notifications) {
       this.$store.dispatch('updateNotifications', notifications);
+    },
+    logout() {
+      const router = this.$router;
+      this.$store.dispatch('logout').then(function() {
+        router.push('home');
+      });
     }
   }
 }

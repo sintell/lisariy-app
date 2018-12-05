@@ -11,7 +11,11 @@
             </vk-grid>
         </div>
         <div>
-            <PictureItem :alt="picture.title" :src="picture.processedSrc"/>
+            <PictureItem
+                :src="picture.processedSrc"
+                :srcset="`${picture.pc.x1}, ${picture.pc.x2} 2x`"
+                :alt="picture.title"
+            />
             <p>{{picture.description}}</p>
         </div>
         <div slot="footer" class="uk-grid uk-flex-center">

@@ -34,7 +34,10 @@
                 class="uk-overlay-default uk-position-cover"
             >
             </div>
-            <PictureItem :src="picture.thumbnailSrc" :alt="picture.description"/>
+            <PictureItem
+                :src="picture.tn.x2"
+                :srcset="`${picture.tn.x1}, ${picture.tn.x2} 2x`"
+                :alt="picture.description"/>
         </div>
         <div v-if="!editable">
             <vk-card-title>{{picture.title || 'Без названия'}}</vk-card-title>
@@ -58,6 +61,13 @@
                 >
                 </textarea>
             </p>
+            <p>
+                <vue-tags-input
+                    v-model="tag"
+                    :tags="picture.tags"
+                    @tags-changed="updatePictureTags"
+                />
+            </p>
         </div>
         <div slot="footer" v-if="!editable">
             <vk-button type="text" @click="openPicture(picture.id)">Подробнее...</vk-button>
@@ -67,20 +77,30 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import PictureItem from '@/components/PictureItem';
+import PictureItem from '@/components/PictureItem.vue';
+import VueTagsInput from '@johmun/vue-tags-input';
+import { UPDATE_PICTURE_TAGS } from "@/types";
 
 export default {
     name:'picture-card',
     components: {
-        PictureItem
+        PictureItem,
+        VueTagsInput
+    },
+    data: function() {
+        return {
+            tag: '',
+        }
     },
     props: {
         picture: Object,
         editable: Boolean,
     },
-    computed: mapState({
-        authorized: state => state.user.key !== undefined
-    }),
+    computed: {
+        ...mapState({
+            authorized: state => state.user.key !== undefined
+        }),
+    },
     methods: {
         openPicture(id) {
             this.$router.push({name: 'picture', params: {id}});
@@ -89,8 +109,11 @@ export default {
             'hidePicture',
             'showPicture',
             'deletePicture',
-            'updatePicture'
-        ])
+            'updatePicture',
+        ]),
+        updatePictureTags(tags) {
+            this.$store.dispatch(UPDATE_PICTURE_TAGS, {pictureId: this.picture.id, tags});
+        }
     }
 }
 </script>
