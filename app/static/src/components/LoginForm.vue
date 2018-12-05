@@ -10,7 +10,7 @@
                     class="uk-input"
                     type="email"
                     placeholder="Логин (например e-mail)"
-                    :v-model="login"
+                    v-model="login"
                     @keyup.enter="submitData"
                 />
             </div>
@@ -25,7 +25,7 @@
                         class="uk-input"
                         :type="passwordVisible ? 'text' : 'password'"
                         placeholder="Пароль (8-32 символа)"
-                        :v-model="password"
+                        v-model="password"
                         @keyup.enter="submitData"
                         @blur="hidePassword"
                     />
