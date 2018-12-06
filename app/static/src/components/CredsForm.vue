@@ -3,7 +3,7 @@
         class="uk-width-1-3 uk-align-center"
         padding="small"
     >
-        <vk-card-title>Добро пожаловать!</vk-card-title>
+        <vk-card-title><slot name="title">Добро пожаловать!</slot></vk-card-title>
         <form @submit.prevent="submitData">
             <div class="uk-margin">
                 <input
@@ -35,7 +35,7 @@
                 type="primary"
                 @click="submitData"
             >
-                Войти
+                <slot name="button-text">Войти</slot>
             </vk-button>
         </form>
     </vk-card>
@@ -43,7 +43,7 @@
 
 <script>
 export default {
-    name: 'login-form',
+    name: 'creds-form',
     props: {
         onSubmit: Function,
     },

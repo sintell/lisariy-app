@@ -22,6 +22,7 @@ import {
   UPDATE_NOTIFICATIONS,
   LOG_IN,
   LOG_OUT,
+  REGISTER,
 } from "./types";
 
 Vue.use(Vuex)
@@ -49,7 +50,7 @@ export default new Vuex.Store({
       });
     },
     isLoggedIn: state => {
-      return state.user.key !== undefined;
+      return state.user && !!state.user.login;
     }
   },
   mutations: {
@@ -88,6 +89,9 @@ export default new Vuex.Store({
     },
     [LOG_OUT]: (state) => {
       state.user = {};
+    },
+    [REGISTER]: (state, user) => {
+      state.user = user;
     },
     [ADD_NOTIFICATION]: (state, notification) => {
       state.notifications.push(notification);
@@ -204,8 +208,13 @@ export default new Vuex.Store({
     logout({ commit }) {
       return authAPI.logout().then(({data: {response}}) => {
         commit(LOG_OUT, response);
-      })
+      });
 
+    },
+    [REGISTER]: ({ commit }, authData) => {
+      return authAPI.register(authData).then(({data: {response}}) => {
+        commit(REGISTER, response);
+      });
     },
     getMeInfo({ commit }) {
       authAPI.getMe().then(({data: {response}}) => {

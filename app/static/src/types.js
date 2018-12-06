@@ -26,6 +26,8 @@ export const HIDE_PICTURE = 'hidePicture';
 //Auth
 export const LOG_IN = 'logIn';
 export const LOG_OUT = 'logOut';
+export const REGISTER = 'register';
+
 
 //Meta
 

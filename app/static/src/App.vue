@@ -45,15 +45,17 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   computed: {
     ...mapState({
       loading: state => state.loading,
-      authorized: state => state.user.key !== undefined,
       notifications: state => state.notifications,
       countUnsaved: state => state.submitedPictures.editable.length,
+    }),
+    ...mapGetters({
+      authorized: 'isLoggedIn'
     })
   },
   created() {
@@ -69,7 +71,7 @@ export default {
     logout() {
       const router = this.$router;
       this.$store.dispatch('logout').then(function() {
-        router.push('home');
+        router.push('/');
       });
     }
   }

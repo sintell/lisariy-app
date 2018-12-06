@@ -1,7 +1,11 @@
 <template>
     <div>
-        <creds-form :onSubmit="login"/>
+        <creds-form :onSubmit="register">
+            <span slot="title">Заполни регистрационные данные:</span>
+            <span slot="button-text">Зарегистрироваться</span>
+        </creds-form>
     </div>
+
 </template>
 
 <script>
@@ -16,9 +20,9 @@ export default {
         user: state => state.user
     }),
     methods: {
-        login(authData) {
+        register(authData) {
             const router = this.$router;
-            this.$store.dispatch("login", authData).then(function() {
+            this.$store.dispatch("register", authData).then(function() {
                 router.push('/');
             })
         }
@@ -30,3 +34,7 @@ export default {
     }
 }
 </script>
+
+<style>
+
+</style>

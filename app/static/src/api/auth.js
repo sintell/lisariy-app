@@ -6,6 +6,9 @@ export default {
     logout() {
         return axios.post('/api/logout');
     },
+    register(authData) {
+        return axios.post('/api/admin/register', authData);
+    },
     getMe() {
         return axios.get('/api/me');
     }
