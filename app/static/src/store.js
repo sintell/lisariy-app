@@ -118,14 +118,14 @@ export default new Vuex.Store({
       state.submitedPictures.editable = state.submitedPictures.editable.map((p) => p.id === id ? {...p, toUpdate: true}: p);
     },
     [PICTURE_UPDATE]:(state, picture) => {
-      state.pictures.all = [picture, ...state.pictures.all];
+      state.pictures.all = state.pictures.all.map((p) => p.id == picture.id ? picture : p);
       state.submitedPictures.editable = state.submitedPictures.editable.filter(p => p.id !== picture.id);
     },
     [ROLLBACK_PICTURE_UPDATE]:(state, id) => {
       state.pictures.all = state.submitedPictures.editable.map((p) => p.id === id ? {...p, toUpdate: false}: p);
     },
     [UPDATE_PICTURE_TAGS]:(state, {pictureId, tags}) => {
-      state.submitedPictures.editable = state.submitedPictures.editable
+      state.pictures.all = state.pictures.all
         .map((p) => p.id === pictureId ? {...p, tags: tags}: p);
     },
   },

@@ -1,45 +1,79 @@
 <template>
-    <vk-card>
+    <vk-card class="uk-flex uk-flex-column">
         <div
-            v-if="authorized"
+            v-if="authorized && editable"
             slot="badge"
         >
             <vk-icon-button
-                v-if="!picture.isHidden && !editable"
+                v-if="!edited && editable"
+                v-vk-tooltip="'Редактировать изображение'"
+                icon="pencil"
+                @click="edited = true"
+            />
+            <vk-icon-button
+                v-if="edited"
+                v-vk-tooltip="'Удалить изображение'"
+                icon="trash"
+                class="uk-button-danger"
+                @click="deletePicture(picture.id)"
+            />
+            &nbsp;
+            <vk-icon-button
+                v-if="edited &&!picture.isHidden"
+                v-vk-tooltip="'Скрыть изображение от пользователей'"
+                class="uk-button-danger"
                 icon="minus-circle"
                 @click="hidePicture(picture.id)"
             />
             <vk-icon-button
-                v-if="picture.isHidden && !editable"
-                icon="trash"
-                class="uk-button-danger"
-                @click="deletePicture(picture.id)"
-            />&nbsp;
-            <vk-icon-button
-                v-if="picture.isHidden && !editable"
+                v-if="edited && picture.isHidden"
+                v-vk-tooltip="'Показать изображение пользователям'"
                 class="uk-button-primary"
                 icon="plus-circle"
                 @click="showPicture(picture.id)"
-            />
+            />&nbsp;
             <vk-icon-button
-                v-if="editable"
+                v-if="edited"
+                v-vk-tooltip="'Сохранить изменения'"
                 class="uk-button-primary"
                 icon="check"
-                @click="updatePicture(picture)"
+                @click="updatePicture(picture), edited = false"
             />
         </div>
         <div slot="media-top">
-            <div
-                v-if="picture.isHidden && !editable"
-                class="uk-overlay-default uk-position-cover"
-            >
+            <div class="uk-inline">
+                <div
+                    v-if="edited || picture.isHidden"
+                    class="uk-overlay-default uk-position-cover"
+                ></div>
+                <PictureItem
+                    :src="picture.tn.x2"
+                    :srcset="`${picture.tn.x1}, ${picture.tn.x2} 2x`"
+                    :alt="picture.description"
+                    @click="showModal = true"
+                />
             </div>
-            <PictureItem
-                :src="picture.tn.x2"
-                :srcset="`${picture.tn.x1}, ${picture.tn.x2} 2x`"
-                :alt="picture.description"/>
+            <vk-modal-full :show.sync="showModal" @keyup.esc="showModal = false">
+                <vk-modal-full-close large @click="showModal = false"></vk-modal-full-close>
+                <vk-grid collapse class="uk-child-width-1-2@s uk-flex-middle">
+                    <div :style="`background: url(${picture.pc.x2}) center / contain no-repeat;`" v-vk-height-viewport></div>
+                    <div class="uk-padding-large" >
+                        <h1>{{picture.title}}</h1>
+                        <p>{{picture.description}}</p>
+                        <p>
+                            <vk-label
+                                v-for="picture in picture.tags"
+                                :key="picture.id"
+                                class="label-with-spacer"
+                            >
+                            {{picture.text}}
+                            </vk-label>
+                        </p>
+                    </div>
+                </vk-grid>
+            </vk-modal-full>
         </div>
-        <div v-if="!editable">
+        <div v-if="!edited">
             <vk-card-title>{{picture.title || 'Без названия'}}</vk-card-title>
             <p>{{picture.description || '...'}}</p>
         </div>
@@ -69,14 +103,14 @@
                 />
             </p>
         </div>
-        <div slot="footer" v-if="!editable">
-            <vk-button type="text" @click="openPicture(picture.id)">Подробнее...</vk-button>
+        <div slot="footer" v-if="!edited">
+            <vk-button type="text" @click="showModal = true">Подробнее...</vk-button>
         </div>
     </vk-card>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import PictureItem from '@/components/PictureItem.vue';
 import VueTagsInput from '@johmun/vue-tags-input';
 import { UPDATE_PICTURE_TAGS } from "@/types";
@@ -90,6 +124,8 @@ export default {
     data: function() {
         return {
             tag: '',
+            showModal: false,
+            edited: false,
         }
     },
     props: {
@@ -97,8 +133,8 @@ export default {
         editable: Boolean,
     },
     computed: {
-        ...mapState({
-            authorized: state => state.user.key !== undefined
+        ...mapGetters({
+            authorized: 'isLoggedIn',
         }),
     },
     methods: {
@@ -118,6 +154,12 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+.label-with-spacer {
+    margin: 0 5px;
 
+    &:last-child {
+        margin: 0;
+    }
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pictures-list :pictures="pictures"/>
+    <pictures-list :pictures="pictures" :editable="authorized"/>
   </div>
 </template>
 
@@ -19,7 +19,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pictures: 'picturesNewToOld'
+      pictures: 'picturesNewToOld',
+      authorized: 'isLoggedIn'
     })
   }
 }
