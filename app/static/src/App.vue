@@ -8,7 +8,9 @@
     />
     <vk-navbar>
       <vk-navbar-nav slot="center">
-        <vk-navbar-logo>Lisariy</vk-navbar-logo>
+        <vk-navbar-logo>
+          <img class="nav-logo-icon" src="/fox.svg" alt="Lisariy fox icon"/>
+        </vk-navbar-logo>
         <vk-navbar-nav-item
           :active="this.$route.path === '/'"
           href="/"
@@ -38,9 +40,19 @@
           @click.prevent="logout"/>
       </vk-navbar-nav>
     </vk-navbar>
-      <div class="uk-container">
-        <router-view/>
+    <div class="uk-container">
+      <router-view/>
+    </div>
+    <hr class="uk-divider-icon"/>
+    <div class="uk-container">
+      <div class="footer">
+        <div>Site created by Antky from <a href="aaleks.ru">antky.ru</a></div>
+        <div>
+          Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+        </div>
+        <div>Copyright 2019 Lisariy</div>
       </div>
+    </div>
   </div>
 </template>
 
@@ -90,5 +102,13 @@ export default {
 }
 .uk-notification-message {
   box-shadow: #aaa -1px 1px 4px;
+}
+
+.nav-logo-icon {
+  width: 50px;
+}
+
+.footer {
+  font-size: 10px;
 }
 </style>
