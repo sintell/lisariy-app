@@ -53,25 +53,6 @@
                     @click="showModal = true"
                 />
             </div>
-            <vk-modal-full :show.sync="showModal" @keyup.esc="showModal = false">
-                <vk-modal-full-close large @click="showModal = false"></vk-modal-full-close>
-                <vk-grid collapse class="uk-child-width-1-2@s uk-flex-middle">
-                    <div :style="`background: url(${picture.pc.x2}) center / contain no-repeat;`" v-vk-height-viewport></div>
-                    <div class="uk-padding-large" >
-                        <h1>{{picture.title}}</h1>
-                        <p>{{picture.description}}</p>
-                        <p>
-                            <vk-label
-                                v-for="picture in picture.tags"
-                                :key="picture.id"
-                                class="label-with-spacer"
-                            >
-                            {{picture.text}}
-                            </vk-label>
-                        </p>
-                    </div>
-                </vk-grid>
-            </vk-modal-full>
         </div>
         <div v-if="!edited">
             <vk-card-title>{{picture.title || 'Без названия'}}</vk-card-title>
@@ -105,7 +86,7 @@
             </p>
         </div>
         <div slot="footer" v-if="!edited">
-            <vk-button type="text" @click="showModal = true">Подробнее...</vk-button>
+            <vk-button type="text" @click="openPicture(picture.id)">Подробнее...</vk-button>
         </div>
     </vk-card>
 </template>

@@ -1,6 +1,6 @@
 <template>
     <vk-card
-        class="uk-width-1-3 uk-align-center"
+        class="uk-width-1-3@m uk-width-1-1 uk-align-center"
         padding="small"
     >
         <vk-card-title><slot name="title">Добро пожаловать!</slot></vk-card-title>

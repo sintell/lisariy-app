@@ -4,8 +4,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY package.json /app
 COPY babel.config.js /app
-RUN yarn install
 RUN yarn add @vue/cli-plugin-babel @vue/cli-plugin-eslint @vue/cli-service less less-loader vue-template-compiler
+RUN yarn install
 COPY src/ /app/src
 COPY public/ /app/public
 RUN yarn run build --mode production

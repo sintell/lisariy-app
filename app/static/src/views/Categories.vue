@@ -1,7 +1,5 @@
 <template>
-  <div class="uk-container">
-    <categories-list :categories="categories" :editable="authorized"/>
-  </div>
+  <categories-list :categories="categories" :editable="authorized"/>
 </template>
 
 <script>

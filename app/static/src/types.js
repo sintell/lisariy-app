@@ -29,6 +29,14 @@ export const UPDATE_PICTURE_TAGS = "updatePictureTags";
 export const DELETE_PICTURE_TAG = "deletePictureTag";
 export const EDIT_PICTURE_TAG = "editPictureTag";
 
+export const BEGIN_CATEGORY_DELETE = 'beginCategoryDelete';
+export const CATEGORY_DELETE = 'deleteCategory';
+export const ROLLBACK_CATEGORY_DELETE = 'rollbackCategoryDelete';
+
+export const BEGIN_CATEGORY_UPDATE = 'beginCategoryUpdate';
+export const CATEGORY_UPDATE = 'updateCategory';
+export const ROLLBACK_CATEGORY_UPDATE = 'rollbackCategoryUpdate';
+
 export const GET_CATEGORY_SUGGEST = "getCategorySuggest";
 export const GET_ALL_CATEGORIES = 'getAllCategories';
 

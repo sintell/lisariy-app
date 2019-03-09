@@ -25,6 +25,12 @@ import {
   LOG_OUT,
   REGISTER,
   GET_ALL_CATEGORIES,
+  BEGIN_CATEGORY_DELETE,
+  CATEGORY_DELETE,
+  ROLLBACK_CATEGORY_DELETE,
+  BEGIN_CATEGORY_UPDATE,
+  CATEGORY_UPDATE,
+  ROLLBACK_CATEGORY_UPDATE,
   GET_CATEGORY_SUGGEST,
 } from "./types";
 
@@ -32,6 +38,16 @@ Vue.use(Vuex)
 
 const newToOld = (a, b) => {
   return new Date(b.createdAt) - new Date(a.createdAt);
+}
+
+const markToUpdate = (id, toUpdate) => {
+  return (p) => p.id === id ? {...p, toUpdate}: p
+}
+const markToDelete = (id, toDelete) => {
+  return (p) => p.id === id ? {...p, toDelete}: p
+}
+const markHidden = (id, isHidden) => {
+  return (p) => p.id === id ? {...p, isHidden}: p
 }
 
 export default new Vuex.Store({
@@ -113,29 +129,29 @@ export default new Vuex.Store({
       state.notifications = notifications;
     },
     [SHOW_PICTURE]:(state, id) => {
-      state.pictures.all = state.pictures.all.map((p) => p.id === id ? {...p, isHidden: false}: p);
+      state.pictures.all = state.pictures.all.map(markHidden(id, false));
     },
     [HIDE_PICTURE]:(state, id) => {
-      state.pictures.all = state.pictures.all.map((p) => p.id === id ? {...p, isHidden: true}: p);
+      state.pictures.all = state.pictures.all.map(markHidden(id, true));
     },
     [BEGIN_PICTURE_DELETE]:(state, id) => {
-      state.pictures.all = state.pictures.all.map((p) => p.id === id ? {...p, toDelete: true}: p);
+      state.pictures.all = state.pictures.all.map(markToDelete(id, true));
     },
     [PICTURE_DELETE]:(state, id) => {
       state.pictures.all = state.pictures.all.filter((p) => p.id !== id);
     },
     [ROLLBACK_PICTURE_DELETE]:(state, id)=> {
-      state.pictures.all = state.pictures.all.map((p) => p.id === id ? {...p, toDelete: false}: p);
+      state.pictures.all = state.pictures.all.map(markToDelete(id, false));
     },
     [BEGIN_PICTURE_UPDATE]:(state, id) => {
-      state.submitedPictures.editable = state.submitedPictures.editable.map((p) => p.id === id ? {...p, toUpdate: true}: p);
+      state.submitedPictures.editable = state.submitedPictures.editable.map(markToUpdate(id, true));
     },
     [PICTURE_UPDATE]:(state, picture) => {
       state.pictures.all = state.pictures.all.map((p) => p.id == picture.id ? picture : p);
       state.submitedPictures.editable = state.submitedPictures.editable.filter(p => p.id !== picture.id);
     },
     [ROLLBACK_PICTURE_UPDATE]:(state, id) => {
-      state.pictures.all = state.submitedPictures.editable.map((p) => p.id === id ? {...p, toUpdate: false}: p);
+      state.pictures.all = state.submitedPictures.editable.map(markToUpdate(id, false));
     },
     [UPDATE_PICTURE_TAGS]:(state, {pictureId, tags}) => {
       state.pictures.all = state.pictures.all
@@ -147,6 +163,24 @@ export default new Vuex.Store({
     [GET_CATEGORY_SUGGEST]: (state, {suggests, suggestDebounce}) => {
       state.categories.suggestDebounce = suggestDebounce;
       state.categories.suggests = suggests.map(s => ({text: s.text}));
+    },
+    [BEGIN_CATEGORY_DELETE]: (state, id) => {
+      state.categories.all = state.categories.all.map(markToDelete(id, true))
+    },
+    [CATEGORY_DELETE]: (state, id) => {
+      state.categories.all = state.categories.all.filter((c) => c.id == id);
+    },
+    [ROLLBACK_CATEGORY_DELETE]: (state, id) => {
+      state.categories.all = state.categories.all.map(markToDelete(id, false))
+    },
+    [BEGIN_CATEGORY_UPDATE]: (state, id) => {
+      state.categories.all = state.categories.all.map(markToUpdate(id, true));
+    },
+    [CATEGORY_UPDATE]: (state, category) => {
+      state.categories.all = state.categories.all.map((c) => c.id == category.id ? category : c);
+    },
+    [ROLLBACK_CATEGORY_UPDATE]: (state, id) => {
+      state.categories.all = state.categories.all.map(markToUpdate(id, false));
     },
   },
   actions: {
@@ -262,8 +296,24 @@ export default new Vuex.Store({
       const suggestDebounce = setTimeout(() => {
         categoriesAPI.loadCategoriesSuggest(text).then(({data: {response}}) => {
           commit(GET_CATEGORY_SUGGEST, {suggests: response, suggestDebounce});
-        }).catch(() => console.warn('Failed to load suggest'));
+        }).catch(() => {});
       }, 100);
+    },
+    [CATEGORY_DELETE]: ({ commit }, category) => {
+      commit(BEGIN_CATEGORY_DELETE, category.id);
+      categoriesAPI.deleteCategory(category.id).then(() => {
+        commit(CATEGORY_DELETE, category.id);
+      }).catch(() => {
+        commit(ROLLBACK_CATEGORY_DELETE, category.id);
+      })
+    },
+    [CATEGORY_UPDATE]: ({ commit }, category) => {
+      commit(BEGIN_CATEGORY_UPDATE, category.id);
+      categoriesAPI.updateCategory(category.id, category).then(({data: {response}}) => {
+        commit(CATEGORY_UPDATE, response);
+      }).catch(() => {
+        commit(ROLLBACK_CATEGORY_UPDATE, category.id);
+      })
     },
   }
 })
