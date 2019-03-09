@@ -49,7 +49,7 @@
                 <PictureItem
                     :src="picture.tn.x2"
                     :srcset="`${picture.tn.x1}, ${picture.tn.x2} 2x`"
-                    :alt="picture.description"
+                    :alt="picture.title || 'No title' + '. ' + (picture.description || '')"
                     @click="showModal = true"
                 />
             </div>
@@ -99,6 +99,7 @@
                 <vue-tags-input
                     v-model="tag"
                     :tags="picture.tags"
+                    :autocomplete-items="tagsSuggest"
                     @tags-changed="updatePictureTags"
                 />
             </p>
@@ -113,7 +114,8 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import PictureItem from '@/components/PictureItem.vue';
 import VueTagsInput from '@johmun/vue-tags-input';
-import { UPDATE_PICTURE_TAGS } from "@/types";
+import { UPDATE_PICTURE_TAGS, GET_CATEGORY_SUGGEST } from "@/types";
+import axios from "axios";
 
 export default {
     name:'picture-card',
@@ -128,6 +130,10 @@ export default {
             edited: false,
         }
     },
+    watch: {
+        'tag': 'getSuggest',
+    },
+
     props: {
         picture: Object,
         editable: Boolean,
@@ -149,7 +155,13 @@ export default {
         ]),
         updatePictureTags(tags) {
             this.$store.dispatch(UPDATE_PICTURE_TAGS, {pictureId: this.picture.id, tags});
-        }
+        },
+        getSuggest() {
+            if (this.tag.length < 2) {
+                return;
+            }
+            this.$store.dispatch(GET_CATEGORY_SUGGEST, this.tag);
+        },
     }
 }
 </script>

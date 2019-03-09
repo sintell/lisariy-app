@@ -25,6 +25,7 @@ import {
   LOG_OUT,
   REGISTER,
   GET_ALL_CATEGORIES,
+  GET_CATEGORY_SUGGEST,
 } from "./types";
 
 Vue.use(Vuex)
@@ -42,6 +43,7 @@ export default new Vuex.Store({
     },
     categories: {
       all: [],
+      suggests: [],
     },
     submitedPictures: {
       status: 0,
@@ -140,7 +142,10 @@ export default new Vuex.Store({
     },
     [GET_ALL_CATEGORIES]: (state, categories) => {
       state.categories.all = categories;
-    }
+    },
+    [GET_CATEGORY_SUGGEST]: (state, suggests) => {
+      state.categories.suggests = suggests.map(c => c.text);
+    },
   },
   actions: {
     startLoading({ commit }) {
@@ -249,6 +254,14 @@ export default new Vuex.Store({
       }).catch(() => {
         commit(ADD_NOTIFICATION, {message: "Ошибка при загрузке категорий", status: "danger"})
       })
+    },
+    [GET_CATEGORY_SUGGEST]: ({ commit }, text) => {
+      clearTimeout(this.debounce);
+      this.debounce = setTimeout(() => {
+        categoriesAPI.loadCategoriesSuggest(text).then(({data: {response}}) => {
+          commit(GET_CATEGORY_SUGGEST, response);
+        }).catch(() => console.warn('Failed to load suggest'));
+      }, 100);
     },
   }
 })
