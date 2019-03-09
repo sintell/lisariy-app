@@ -7,7 +7,7 @@ COPY babel.config.js /app
 COPY src/ /app/src
 COPY public/ /app/public
 RUN yarn install
-RUN yarn add @vue/cli-service
+RUN yarn add @vue/cli-plugin-babel @vue/cli-plugin-eslint @vue/cli-service less less-loader vue-template-compiler 
 RUN yarn run build --mode production
 
 FROM nginx:1.15.5-alpine
