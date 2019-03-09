@@ -1,7 +1,8 @@
 FROM node:10-alpine as builder
 
 WORKDIR /app
-ENV NODE_ENV=production
+# we need development mode to install vue-cli-service
+ENV NODE_ENV=development
 COPY package.json /app
 COPY babel.config.js /app
 COPY src/ /app/src
