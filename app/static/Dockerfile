@@ -7,7 +7,8 @@ COPY babel.config.js /app
 COPY src/ /app/src
 COPY public/ /app/public
 RUN yarn install
-RUN yarn build --mode production
+RUN yarn add @vue/cli-service
+RUN yarn run build --mode production
 
 FROM nginx:1.15.5-alpine
 
