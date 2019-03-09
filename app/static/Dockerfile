@@ -1,13 +1,13 @@
 FROM node:10-alpine as builder
 
 WORKDIR /app
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 COPY package.json /app
 COPY babel.config.js /app
 COPY src/ /app/src
 COPY public/ /app/public
 RUN yarn install
-RUN yarn build
+RUN yarn build --mode production
 
 FROM nginx:1.15.5-alpine
 
