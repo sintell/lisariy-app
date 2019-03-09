@@ -28,6 +28,8 @@ export const LOG_IN = 'logIn';
 export const LOG_OUT = 'logOut';
 export const REGISTER = 'register';
 
+// Categories
+export const GET_ALL_CATEGORIES = 'getAllCategories';
 
 //Meta
 

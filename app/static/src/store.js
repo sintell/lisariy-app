@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import imageAPI from "./api/images";
-import authAPI from "./api/auth"
+import authAPI from "./api/auth";
+import categoriesAPI from './api/categories';
 import {
   GET_ALL_PICTURES,
   GET_ONE_PICTURE,
@@ -23,9 +24,14 @@ import {
   LOG_IN,
   LOG_OUT,
   REGISTER,
+  GET_ALL_CATEGORIES,
 } from "./types";
 
 Vue.use(Vuex)
+
+const newToOld = (a, b) => {
+  return new Date(b.createdAt) - new Date(a.createdAt);
+}
 
 export default new Vuex.Store({
   state: {
@@ -33,6 +39,9 @@ export default new Vuex.Store({
     pictures: {
       all: [],
       current: {}
+    },
+    categories: {
+      all: [],
     },
     submitedPictures: {
       status: 0,
@@ -45,9 +54,10 @@ export default new Vuex.Store({
   },
   getters:{
     picturesNewToOld: state => {
-      return state.pictures.all.sort((a, b) => {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      });
+      return state.pictures.all.sort(newToOld);
+    },
+    categoriesNewToOld: state => {
+      return state.categories.all.sort(newToOld);
     },
     isLoggedIn: state => {
       return state.user && !!state.user.login;
@@ -128,6 +138,9 @@ export default new Vuex.Store({
       state.pictures.all = state.pictures.all
         .map((p) => p.id === pictureId ? {...p, tags: tags}: p);
     },
+    [GET_ALL_CATEGORIES]: (state, categories) => {
+      state.categories.all = categories;
+    }
   },
   actions: {
     startLoading({ commit }) {
@@ -229,6 +242,13 @@ export default new Vuex.Store({
     },
     updateNotifications({ commit }, notifications) {
       commit(UPDATE_NOTIFICATIONS, notifications);
-    }
+    },
+    [GET_ALL_CATEGORIES]: ({ commit }) => {
+      categoriesAPI.loadCategoriesData().then(({data: {response}}) => {
+        commit(GET_ALL_CATEGORIES, response);
+      }).catch(() => {
+        commit(ADD_NOTIFICATION, {message: "Ошибка при загрузке категорий", status: "danger"})
+      })
+    },
   }
 })

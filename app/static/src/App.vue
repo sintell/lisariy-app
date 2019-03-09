@@ -18,6 +18,12 @@
           @click.prevent="pushRoute('/')"/>
         <vk-navbar-nav-item
           v-if="authorized"
+          :active="this.$route.path === '/categories'"
+          href="/categories"
+          :title="'Категории'"
+          @click.prevent="pushRoute('/categories')"/>
+        <vk-navbar-nav-item
+          v-if="authorized"
           :active="this.$route.path === '/publish'"
           href="/publish"
           :title="'Опубликовать' + (countUnsaved ? ` (${countUnsaved})` : '')"
@@ -30,12 +36,6 @@
           @click.prevent="pushRoute('/login')"/>
         <vk-navbar-nav-item
           v-if="authorized"
-          :active="this.$route.path === '/profile'"
-          href="/profile"
-          title="Мой профиль"
-          @click.prevent="pushRoute('/profile')"/>
-        <vk-navbar-nav-item
-          v-if="authorized"
           title="Выйти"
           @click.prevent="logout"/>
       </vk-navbar-nav>
@@ -46,7 +46,7 @@
     <hr class="uk-divider-icon"/>
     <div class="uk-container">
       <div class="footer">
-        <div>Site created by Antky from <a href="aaleks.ru">antky.ru</a></div>
+        <div>Site created by Antky from <a href="https://aaleks.ru">antky.ru</a></div>
         <div>
           Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
         </div>
