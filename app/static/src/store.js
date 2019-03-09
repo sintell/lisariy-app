@@ -44,6 +44,7 @@ export default new Vuex.Store({
     categories: {
       all: [],
       suggests: [],
+      suggestDebounce: null,
     },
     submitedPictures: {
       status: 0,
@@ -143,8 +144,9 @@ export default new Vuex.Store({
     [GET_ALL_CATEGORIES]: (state, categories) => {
       state.categories.all = categories;
     },
-    [GET_CATEGORY_SUGGEST]: (state, suggests) => {
-      state.categories.suggests = suggests.map(c => c.text);
+    [GET_CATEGORY_SUGGEST]: (state, {suggests, suggestDebounce}) => {
+      state.categories.suggestDebounce = suggestDebounce;
+      state.categories.suggests = suggests.map(s => ({text: s.text}));
     },
   },
   actions: {
@@ -255,11 +257,11 @@ export default new Vuex.Store({
         commit(ADD_NOTIFICATION, {message: "Ошибка при загрузке категорий", status: "danger"})
       })
     },
-    [GET_CATEGORY_SUGGEST]: ({ commit }, text) => {
-      clearTimeout(this.debounce);
-      this.debounce = setTimeout(() => {
+    [GET_CATEGORY_SUGGEST]: ({ commit, state }, text) => {
+      clearTimeout(state.categories.suggestDebounce);
+      const suggestDebounce = setTimeout(() => {
         categoriesAPI.loadCategoriesSuggest(text).then(({data: {response}}) => {
-          commit(GET_CATEGORY_SUGGEST, response);
+          commit(GET_CATEGORY_SUGGEST, {suggests: response, suggestDebounce});
         }).catch(() => console.warn('Failed to load suggest'));
       }, 100);
     },

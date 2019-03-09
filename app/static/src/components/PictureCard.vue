@@ -99,7 +99,7 @@
                 <vue-tags-input
                     v-model="tag"
                     :tags="picture.tags"
-                    :autocomplete-items="tagsSuggest"
+                    :autocomplete-items="tagSuggests"
                     @tags-changed="updatePictureTags"
                 />
             </p>
@@ -131,7 +131,7 @@ export default {
         }
     },
     watch: {
-        'tag': 'getSuggest',
+        'tag': 'getSuggests',
     },
 
     props: {
@@ -139,6 +139,9 @@ export default {
         editable: Boolean,
     },
     computed: {
+        ...mapState({
+            tagSuggests: state => state.categories.suggests,
+        }),
         ...mapGetters({
             authorized: 'isLoggedIn',
         }),
@@ -156,7 +159,7 @@ export default {
         updatePictureTags(tags) {
             this.$store.dispatch(UPDATE_PICTURE_TAGS, {pictureId: this.picture.id, tags});
         },
-        getSuggest() {
+        getSuggests() {
             if (this.tag.length < 2) {
                 return;
             }
