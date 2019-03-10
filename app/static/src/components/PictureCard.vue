@@ -1,5 +1,5 @@
 <template>
-    <vk-card class="uk-flex uk-flex-column">
+    <vk-card class="uk-flex uk-flex-column uk-flex-center" padding="small" hover>
         <div
             v-if="authorized && editable"
             slot="badge"
@@ -40,25 +40,18 @@
                 @click="updatePicture(picture), edited = false"
             />
         </div>
-        <div slot="media-top">
-            <div class="uk-inline">
-                <div
-                    v-if="edited || picture.isHidden"
-                    class="uk-overlay-default uk-position-cover"
-                ></div>
-                <PictureItem
-                    :src="picture.tn.x2"
-                    :srcset="`${picture.tn.x1}, ${picture.tn.x2} 2x`"
-                    :alt="picture.title || 'No title' + '. ' + (picture.description || '')"
-                    @click="showModal = true"
-                />
-            </div>
+        <div class="uk-inline">
+            <div
+                v-if="edited || picture.isHidden"
+                class="uk-overlay-default uk-position-cover"
+            ></div>
+            <PictureItem
+                :src="picture.tn.x2"
+                :srcset="`${picture.tn.x1}, ${picture.tn.x2} 2x`"
+                :alt="picture.title || 'No title' + '. ' + (picture.description || '')"
+            />
         </div>
-        <div v-if="!edited">
-            <vk-card-title>{{picture.title || 'Без названия'}}</vk-card-title>
-            <p>{{picture.description || '...'}}</p>
-        </div>
-        <div v-else>
+        <div v-if="edited">
             <vk-card-title>
                 <input
                     class="uk-input"
@@ -84,9 +77,6 @@
                     @tags-changed="updatePictureTags"
                 />
             </p>
-        </div>
-        <div slot="footer" v-if="!edited">
-            <vk-button type="text" @click="openPicture(picture.id)">Подробнее...</vk-button>
         </div>
     </vk-card>
 </template>

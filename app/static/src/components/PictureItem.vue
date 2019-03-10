@@ -11,10 +11,3 @@ export default {
     }
 }
 </script>
-
-<style>
-    .picture {
-        width: 100%;
-        height: auto;
-    }
-</style>

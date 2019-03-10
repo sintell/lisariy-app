@@ -5,6 +5,7 @@
             uk-flex-center
             uk-text-center
             uk-child-width-auto"
+        matched
     >
         <div
             v-for="picture in pictures"

@@ -27,7 +27,7 @@
             </vk-grid>
         </vk-grid>
         <div slot="footer" class="uk-grid uk-flex-center">
-            <div class="uk-width-2-3">
+            <div class="uk-width-1-1 uk-width-2-3@m">
                 <vue-disqus
                     shortname="lisariy-ru"
                     :identifier="pic_id"
