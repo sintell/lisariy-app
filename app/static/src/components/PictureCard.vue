@@ -40,17 +40,17 @@
                 @click="updatePicture(picture), edited = false"
             />
         </div>
-        <div class="uk-inline">
+        <a :href="`/picture/${picture.id}`" class="uk-inline" @click.prevent="openPicture(picture.id)">
             <div
                 v-if="edited || picture.isHidden"
                 class="uk-overlay-default uk-position-cover"
-            ></div>
+            />
             <PictureItem
                 :src="picture.tn.x2"
                 :srcset="`${picture.tn.x1}, ${picture.tn.x2} 2x`"
                 :alt="picture.title || 'No title' + '. ' + (picture.description || '')"
             />
-        </div>
+        </a>
         <div v-if="edited">
             <vk-card-title>
                 <input
